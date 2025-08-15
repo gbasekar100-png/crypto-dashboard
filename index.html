@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Top 20 Altcoins</title>
+  <style>
+    body { font-family: Arial; padding: 20px; background: #f5f5f5; }
+    table { border-collapse: collapse; width: 100%; background: #fff; }
+    th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
+    th { background-color: #4CAF50; color: white; }
+  </style>
+</head>
+<body>
+  <h1>Top 20 Altcoins (CoinGecko)</h1>
+  <table id="cryptoTable">
+    <thead>
+      <tr>
+        <th>Rank</th>
+        <th>Name</th>
+        <th>Symbol</th>
+        <th>Market Cap</th>
+        <th>Price</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script>
+    async function loadCoins() {
+      const res = await fetch('https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=100&page=1');
+      const data = await res.json();
+      const tableBody = document.querySelector("#cryptoTable tbody");
+      tableBody.innerHTML = "";
+      let rank = 1;
+      for (let coin of data) {
+        if (coin.symbol.toUpperCase() === 'BTC' || coin.market_cap < 50000000) continue; // skip BTC & small coins
+        if (rank > 20) break;
+        const row = `<tr>
+          <td>${rank}</td>
+          <td>${coin.name}</td>
+          <td>${coin.symbol.toUpperCase()}</td>
+          <td>$${coin.market_cap.toLocaleString()}</td>
+          <td>$${coin.current_price.toLocaleString()}</td>
+        </tr>`;
+        tableBody.innerHTML += row;
+        rank++;
+      }
+    }
+    loadCoins();
+  </script>
+</body>
+</html>
